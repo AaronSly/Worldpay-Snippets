@@ -1,21 +1,33 @@
 <?php
+// Uncomment to create a log file
+//$req_dump = print_r( $_REQUEST, true );
+//$fp = file_put_contents( 'request.log', $req_dump, FILE_APPEND );
+
 //get vars from POST and sanitize
 $wpDesc = filter_input(INPUT_POST, 'desc', FILTER_SANITIZE_SPECIAL_CHARS);
 $wpAmount = filter_input(INPUT_POST, 'amount', FILTER_SANITIZE_SPECIAL_CHARS);
 $wpEmail = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
 $wpName = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
+$rawAuthMessage = filter_input(INPUT_POST, 'rawAuthMessage', FILTER_SANITIZE_SPECIAL_CHARS);
 
 //build associative array from clean vars
 $wpVars = array('wpdesc' => $wpDesc,
-		'wpamount' => $wpAmount,
-		'wpemail' => $wpEmail,
-		'wpname' => $wpName);
+				'wpamount' => $wpAmount,
+				'wpemail' => $wpEmail,
+				'wpname' => $wpName);
 
 //build redirection URL
 $host = $_SERVER['HTTP_HOST']; //get the host
-$path = "/success/";//url to redirect to
-//build full URL including GET vars that can be read on success page
-$url = 'http://'.$host.$path.'?'.http_build_query($wpVars); 
+if ($rawAuthMessage == 'trans.cancelled'){
+	$path = "/cancelled/";//url to redirect to cancelled page
+	$url = 'http://'.$host.$path.'?'.http_build_query($wpVars);
+} elseif ($rawAuthMessage == 'cardbe.msg.authorised') {
+	$path = "/success/";//url to redirect to success page
+	$url = 'http://'.$host.$path.'?'.http_build_query($wpVars);
+} else {
+	$path = '';
+	$url = 'http://'.$host;
+}
 
 //redirect
 echo "<meta http-equiv='Refresh' content='1; Url=\"$url\"'>";
