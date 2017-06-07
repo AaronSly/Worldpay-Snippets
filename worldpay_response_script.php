@@ -7,9 +7,9 @@ $wpName = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_SPECIAL_CHARS);
 
 //build associative array from clean vars
 $wpVars = array('wpdesc' => $wpDesc,
-				'wpamount' => $wpAmount,
-				'wpemail' => $wpEmail,
-				'wpname' => $wpName);
+		'wpamount' => $wpAmount,
+		'wpemail' => $wpEmail,
+		'wpname' => $wpName);
 
 //build redirection URL
 $host = $_SERVER['HTTP_HOST']; //get the host
